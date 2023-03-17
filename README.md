@@ -17,14 +17,14 @@ Features
 ============
 
 * Fast multi-threaded search for text in files with optional FileInfo filters (creation, access, mod date and file size - more coming!)
-* New: Multi folder mode - select which folders you want to search thru
+* Multi folder selection mode - select which folders you want to search thru/filter thru
 
 Tech features:
 ============
 
 * Non recursive file search
-* Self-written components for datagrid ("controlgrid"). The .Net datagrid just didn't work for me.
-* Removed a lot of windows specific stuff as I plan to refactor out the BMH routines so that I could work on a terminal version
+* Self-written components for datagrid ("controlgrid")
+* Removed a lot of windows specific stuff
 
 Future
 ============
@@ -33,10 +33,10 @@ Future
 * Fandro.Terminal/CLI 
 * Multiplatform (low priority because of the crazy amount of "desktop frameworks" for .Net)
 
-Multiplatform
-============
+Multiplatform?
+=============
 
-Fandro is a good test bed to experiment with all these silly UI frameworks available for .Net. Way too many of them - but at least that gives me a chance to see what will work and what not. If you wanted to build an Electron wrapper - feel free to do that in the future after I've separated out the search routines.
+Fandro at this stage is a good test bed to experiment with all these other UI frameworks available for .Net
 
 Screenshots:
 ============
