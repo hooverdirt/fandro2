@@ -366,6 +366,7 @@ namespace Fandro2.lib.Controls.Folders {
                     this.setMultiFolderModeClick();
                     this.setFolderSelectionMode(FolderSelectionMode.MultipleFolders);
                     this.multifiles = value;
+                    this.txtFolder.Text = String.Join(";", value);
                 }
             }
 
