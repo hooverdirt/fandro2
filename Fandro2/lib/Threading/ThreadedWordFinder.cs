@@ -326,7 +326,7 @@ namespace Fandro2.lib.Threading {
             updateStatusBarFilesFound(e.FileInfo.FullName + " " + (bconditions == true? "(match)" : "(no match)"));
             // we'll need at least data in the file...
             if (e.FileInfo.Length > 0 && bconditions == true) {
-                if (pattern != "") {
+                if (!String.IsNullOrEmpty(pattern)) {
                     long position = findTextPointersLong(pattern, e.FileInfo);
                     if (position > -1) {
                         updateListView(e.FileInfo, position);
