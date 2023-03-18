@@ -114,38 +114,6 @@ namespace Fandro2.lib.Threading {
             return targetform != null && startingfolder != null && mask != null;
         }
 
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="text"></param>
-        /// <param name="file"></param>
-        /// <returns></returns>
-        private int findTextPointers(string text, FileInfo file) {
-            int ret = -1;
-
-            try {
-                using (MemoryMappedFile memfile = MemoryMappedFile.CreateFromFile(
-                      file.FullName, FileMode.Open, null, 0, MemoryMappedFileAccess.Read)) {
-                    try {
-                        using (MemoryMappedViewAccessor accessor = memfile.CreateViewAccessor(
-                            0, file.Length, MemoryMappedFileAccess.Read)) {
-                            // do your fancy search against fancy pointers
-                            ret = boyerMooreHorspoolPointers(text, accessor, (int)file.Length);
-                        }
-                    }
-                    catch (Exception ex) {
-                        Trace.TraceError(ex.Message + " -- " + file.FullName + " - " + file.Length);
-                    }
-                }
-            }
-            catch (Exception ex) {
-                Trace.TraceError(ex.Message + " -- " + file.FullName + " - " + file.Length);
-            }
-
-            return ret;
-        }
-
         /// <summary>
         /// Long variant...
         /// </summary>
@@ -177,99 +145,6 @@ namespace Fandro2.lib.Threading {
             return ret;
         }
 
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="text"></param>
-        /// <param name="accessor"></param>
-        /// <param name="size"></param>
-        /// <returns></returns>
-        unsafe private int boyerMooreHorspoolPointers(string text, MemoryMappedViewAccessor accessor, int size) {
-            int ret = -1;
-
-            if (!casesensitive) {
-                pattern = pattern.ToUpper();
-            }
-
-            byte* ptrMemMap = (byte*)0;
-
-            accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref ptrMemMap);
-
-
-            int[] bad_shift = new int[char.MaxValue + 1];
-
-
-            for (int i = 0; i < char.MaxValue + 1; i++) {
-                bad_shift[i] = pattern.Length;
-            }
-
-            int last = pattern.Length - 1;
-
-            for (int i = 0; i < last; i++) {
-                bad_shift[pattern[i]] = last - i;
-            }
-
-            int patlength = pattern.Length;
-            int pos = patlength - 1;
-            char lastchar;
-            int numskip = 0;
-            bool found = false;
-
-            if (pos != 0) {
-                ret = -1;
-                lastchar = pattern[patlength - 1];
-
-                while (pos < size) {
-                    char tmpchar = '0';
-
-                    if (!casesensitive) {
-                        tmpchar = char.ToUpper(Convert.ToChar(ptrMemMap[pos]));
-                    }
-                    else {
-                        tmpchar = Convert.ToChar(ptrMemMap[pos]);
-                    }
-
-
-
-                    if (tmpchar != lastchar) {
-                        numskip = bad_shift[tmpchar];
-                    }
-                    else {
-                        int i = patlength - 1;
-                        found = true;
-                        numskip = patlength;
-                        while (i > 0) {
-                            pos--;
-
-                            if (!casesensitive) {
-                                tmpchar = char.ToUpper(Convert.ToChar(ptrMemMap[pos]));
-                            }
-                            else {
-                                tmpchar = Convert.ToChar(ptrMemMap[pos]);
-                            }
-
-                            if (tmpchar != pattern[i - 1]) {
-                                found = false;
-                                numskip = patlength - i + bad_shift[lastchar];
-                                break;
-                            }
-                            i--;
-                        }
-                    }
-
-                    if (found) {
-                        ret = pos;
-                        return ret;
-                    }
-
-                    pos += numskip;
-                }
-
-            }
-
-            return ret;
-        }
 
         /// <summary>
         /// 
