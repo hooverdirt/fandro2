@@ -17,9 +17,10 @@ using lib.Controls.Conditions;
 using lib.Controls.Conditions.Classes;
 using System.Collections;
 using Fandro2.lib.Controls.Folders;
+using Fandro2.lib.Interfaces;
 
 namespace Fandro2 {
-    public partial class mainForm : Form {
+    public partial class mainForm : Form, IFandroFindForm {
         private ManualResetEvent userstoppedevent = new ManualResetEvent(false);
         private ManualResetEvent processstoppedevent = new ManualResetEvent(false);
         ThreadedWordFinder finder = null;
@@ -144,6 +145,24 @@ namespace Fandro2 {
             set {
                 // AHTODO - we should hide some of the usercontrol properties...
                 this.ftextFolders.FolderTextBox = value;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public IList<ListViewItem> FoundFileItems {
+            get {
+                return this.lvwSearchResults.Items.Cast<ListViewItem>().ToList();
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public IList<ListViewItem> SelectedFileItems {
+            get {
+                return this.lvwSearchResults.SelectedItems.Cast<ListViewItem>().ToList();
             }
         }
 
