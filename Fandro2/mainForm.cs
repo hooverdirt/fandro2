@@ -23,7 +23,7 @@ namespace Fandro2 {
     public partial class mainForm : Form, IFandroFindForm {
         private ManualResetEvent userstoppedevent = new ManualResetEvent(false);
         private ManualResetEvent processstoppedevent = new ManualResetEvent(false);
-        ThreadedWordFinder finder = null;
+        FoldersWordFinder finder = null;
         FindOptions findoptions = null;
         HelpProvider helpProvider = null;
 
@@ -218,7 +218,7 @@ namespace Fandro2 {
             processstoppedevent.Reset();
             userstoppedevent.Reset();
 
-            this.finder = new ThreadedWordFinder(userstoppedevent, processstoppedevent);
+            this.finder = new FoldersWordFinder(userstoppedevent, processstoppedevent);
 
 
             finder.Mask = this.cboFileMask.Text;

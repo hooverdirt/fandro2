@@ -16,7 +16,7 @@ using Fandro2.lib.Matching;
 using System.ComponentModel.Design;
 
 namespace Fandro2.lib.Threading {
-    public class ThreadedWordFinder {
+    public class FoldersWordFinder {
         private ManualResetEvent stopThread;
         private ManualResetEvent threadHasStopped;
         private string startingfolder = null;
@@ -90,7 +90,7 @@ namespace Fandro2.lib.Threading {
             set { this.conditions = value; }
         }
 
-        public ThreadedWordFinder() {
+        public FoldersWordFinder() {
         }
 
         /// <summary>
@@ -98,7 +98,7 @@ namespace Fandro2.lib.Threading {
         /// </summary>
         /// <param name="stopThread"></param>
         /// <param name="hasStoppedThread"></param>
-        public ThreadedWordFinder(ManualResetEvent stopthread, ManualResetEvent hasstoppedthread) : this() {
+        public FoldersWordFinder(ManualResetEvent stopthread, ManualResetEvent hasstoppedthread) : this() {
             // signals if thread is going to be stopped from UI
             stopThread = stopthread;
             // signals if thread has stopped internally
