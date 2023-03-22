@@ -703,6 +703,12 @@ namespace Fandro2 {
                 else if (p.ActiveControl is ComboBox) {
                     (p.ActiveControl as ComboBox).SelectAll();
                 }
+                else if (p.ActiveControl is ListView) {
+                    ListView iview = (ListView)p.ActiveControl;
+                    foreach (ListViewItem item in iview.Items) {
+                        item.Selected = true;
+                    }
+                }
             }
         }
 
