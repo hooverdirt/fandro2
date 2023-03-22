@@ -1,57 +1,64 @@
 ﻿using Fandro2.lib.Matching;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
-using System.IO;
 using System.IO.MemoryMappedFiles;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Windows.Forms.Design;
 
 namespace Fandro2.lib.Threading {
-    public class FileSetWordFinder {
-        List<string> fileset = new List<string>();
+    public class BaseFileWordFinder {
         private ManualResetEvent stopThread;
         private ManualResetEvent threadHasStopped;
         private string pattern = null;
         private bool casesensitive = false;
         private DateTime duration = DateTime.MinValue;
         private FileFilters conditions;
-        private Form targetform;
         private Thread nthread = null;
         private int count = 0;
-
-        public FileSetWordFinder() { }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="fileset"></param>
-        /// <param name="stopThread"></param>
-        /// <param name="threadHasStopped"></param>
-        public FileSetWordFinder(List<string> fileset, ManualResetEvent stopThread, ManualResetEvent threadHasStopped) { 
-            this.fileset = fileset;
-            this.stopThread = stopThread;
-            this.threadHasStopped = threadHasStopped;
+        public ManualResetEvent StopWorkResetEvent { 
+            get { return stopThread; } 
+            set { stopThread = value; }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public string Pattern { 
-            get { return pattern; } 
-            set {  pattern = value; } 
+        public ManualResetEvent FinishedWorkResetEvent {
+            get { return this.threadHasStopped; }
+            set { this.threadHasStopped = value; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Pattern {
+            get { return this.pattern; }
+            set { this.pattern = value; }
         }
 
         /// <summary>
         /// 
         /// </summary>
         public bool CaseSensitive {
-            get { return casesensitive; }
-            set { casesensitive = value; }
+            get { return this.casesensitive; }
+            set { this.casesensitive = value; } 
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public DateTime Duration {
+           get { return this.duration; }
         }
 
         /// <summary>
@@ -66,16 +73,23 @@ namespace Fandro2.lib.Threading {
         /// 
         /// </summary>
         public Thread CurrentThread {
-            get { return nthread; }
+            get { return this.nthread; }
             set { this.nthread = value; }
         }
 
         /// <summary>
         /// 
         /// </summary>
+        public int Count {
+            get { return this.count; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <returns></returns>
-        protected virtual bool isOKToContinue() {
-            return targetform != null && pattern != null && this.fileset.Count > 0;
+        protected virtual bool IsOKToContinue() {
+            return true;
         }
 
         /// <summary>
@@ -85,7 +99,7 @@ namespace Fandro2.lib.Threading {
         /// <param name="accessor"></param>
         /// <param name="size"></param>
         /// <returns></returns>
-        unsafe virtual protected long boyerMooreHorspoolPointersLong(string text, MemoryMappedViewAccessor accessor, long size) {
+        unsafe virtual protected long BoyerMooreHorspoolPointersLong(string text, MemoryMappedViewAccessor accessor, long size) {
             long ret = 0;
 
             if (!casesensitive) {
@@ -176,14 +190,13 @@ namespace Fandro2.lib.Threading {
             return ret;
 
         }
-
         /// <summary>
         /// 
         /// </summary>
         /// <param name="text"></param>
         /// <param name="file"></param>
         /// <returns></returns>
-        protected virtual long findTextPointersLong(string text, FileInfo file) {
+        protected virtual long FindTextPointersLong(string text, FileInfo file) {
             long ret = -1;
 
             try {
@@ -193,7 +206,7 @@ namespace Fandro2.lib.Threading {
                         using (MemoryMappedViewAccessor accessor = memfile.CreateViewAccessor(
                             0, file.Length, MemoryMappedFileAccess.Read)) {
                             // do your fancy Boyer-Moore-Horspool search against the memory mapped file/pointers
-                            ret = boyerMooreHorspoolPointersLong(text, accessor, file.Length);
+                            ret = this.BoyerMooreHorspoolPointersLong(text, accessor, file.Length);
                         }
                     }
                     catch (Exception ex) {
@@ -209,109 +222,29 @@ namespace Fandro2.lib.Threading {
         }
 
         /// <summary>
+        /// Override all work here....
+        /// </summary>
+        protected virtual void DoWork() {
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public BaseFileWordFinder() {
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         public virtual void Execute() {
-            if (this.isOKToContinue()) {
-                this.nthread = new Thread(doWork);
+            if (this.IsOKToContinue()) {
+                this.nthread = new Thread(DoWork);
                 nthread.Start();
                 nthread.Name = "Fandro2_fileset_" + Guid.NewGuid();
                 duration = DateTime.Now;
                 nthread.Start();
             }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <exception cref="NotImplementedException"></exception>
-        public virtual void doWork() {
-            this.initializeDurationTime();
-            foreach (String s in  this.fileset) {
-                if (stopThread.WaitOne(0, true)) {
-                    // AHTODO
-                    break;
-                }
-
-                if (File.Exists(s)) {
-
-
-                    FileInfo p = new FileInfo(s);
-                    bool bconditions = true;
-                    // do all the legwork...
-                    // check pre conditions first and run against matchers.
-                    if (this.conditions != null && this.conditions.Count > 0) {
-                        this.conditions.FileInformation = p;
-                        bconditions = this.conditions.DoMatch();
-                    }
-
-                    if (p.Length > 0 && bconditions == true) {
-                        if (!String.IsNullOrEmpty(pattern)) {
-                            long position = this.findTextPointersLong(pattern, p);
-                            if (position > -1) {
-                                //updateListView(e.FileInfo, position);
-                                count++;
-                            }
-                            else {
-                                if (position == -666) {
-                                    // user signal..
-                                    // need to test this...
-                                    // AHTODO
-                                }
-                            }
-                        }
-
-                        if (stopThread.WaitOne(0, true)) {
-                            // AHTODO
-                            break;
-                        }
-                    }
-                }
-
-                if (stopThread.WaitOne(0, true)) {
-                    // AHTODO
-                    break;
-                }
-
-            }
-
-            updateStatusBarCount();
-            updateDurationTime();
-            updateThreadIsRunning(false);
-            threadHasStopped.Set();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="v"></param>
-        /// <exception cref="NotImplementedException"></exception>
-        private void updateThreadIsRunning(bool v) {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <exception cref="NotImplementedException"></exception>
-        private void updateDurationTime() {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <exception cref="NotImplementedException"></exception>
-        private void updateStatusBarCount() {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <exception cref="NotImplementedException"></exception>
-        private void initializeDurationTime() {
-            throw new NotImplementedException();
         }
     }
 }
