@@ -17,12 +17,13 @@ using lib.Controls.Conditions;
 using lib.Controls.Conditions.Classes;
 using System.Collections;
 using Fandro2.lib.Controls.Folders;
+using Fandro2.lib.Interfaces;
 
 namespace Fandro2 {
-    public partial class mainForm : Form {
+    public partial class mainForm : Form, IFandroFindForm {
         private ManualResetEvent userstoppedevent = new ManualResetEvent(false);
         private ManualResetEvent processstoppedevent = new ManualResetEvent(false);
-        ThreadedWordFinder finder = null;
+        FoldersWordFinder finder = null;
         FindOptions findoptions = null;
         HelpProvider helpProvider = null;
 
@@ -150,6 +151,24 @@ namespace Fandro2 {
         /// <summary>
         /// 
         /// </summary>
+        public IList<ListViewItem> FoundFileItems {
+            get {
+                return this.lvwSearchResults.Items.Cast<ListViewItem>().ToList();
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public IList<ListViewItem> SelectedFileItems {
+            get {
+                return this.lvwSearchResults.SelectedItems.Cast<ListViewItem>().ToList();
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void startToolStripMenuItem_Click(object sender, EventArgs e) {
@@ -199,7 +218,7 @@ namespace Fandro2 {
             processstoppedevent.Reset();
             userstoppedevent.Reset();
 
-            this.finder = new ThreadedWordFinder(userstoppedevent, processstoppedevent);
+            this.finder = new FoldersWordFinder(userstoppedevent, processstoppedevent);
 
 
             finder.Mask = this.cboFileMask.Text;
