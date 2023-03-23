@@ -106,6 +106,13 @@ namespace Fandro2 {
         /// <summary>
         /// 
         /// </summary>
+        public bool FormInvokeRequired {
+            get { return this.InvokeRequired; }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public ListView FilesView {
             get { return this.lvwSearchResults; }
             set { this.lvwSearchResults = value; }

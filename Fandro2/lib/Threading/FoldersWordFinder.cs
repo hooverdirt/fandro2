@@ -16,79 +16,47 @@ using Fandro2.lib.Matching;
 using System.ComponentModel.Design;
 
 namespace Fandro2.lib.Threading {
-    public class FoldersWordFinder {
-        private ManualResetEvent stopThread;
-        private ManualResetEvent threadHasStopped;
+    public class FoldersWordFinder : BaseFileWordFinder {
         private string startingfolder = null;
-        private string mask = null;
         private bool recursive = false;
         private mainForm targetform = null;
-        private Thread nthread = null;
-        private string pattern = null;
-        private bool casesensitive = true;
-        private DateTime duration = DateTime.MinValue;
-        // private FindFile findfiler = null;
         private FileFinder findfiler = null;
-        private FileFilters conditions = null;
-
         private int count = 0;
+        private string mask = null;
 
 
         /// <summary>
         /// 
         /// </summary>
-        public string StartFolder {
-            get { return startingfolder; }
-            set { startingfolder = value; }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Pattern {
-            get { return pattern; }
-            set { pattern = value; }
+        public bool Recursive {
+            get { return this.recursive; }
+            set { this.recursive = value; }
         }
 
         /// <summary>
         /// 
         /// </summary>
         public string Mask {
-            get { return mask; }
-            set { mask = value; }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool CaseSensitive {
-            get { return casesensitive; }
-            set { casesensitive = value; }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool Recursive {
-            get { return recursive; }
-            set { recursive = value; }
+            get { return this.mask; }
+            set { this.mask = value; }
         }
 
         /// <summary>
         /// 
         /// </summary>
         public mainForm TargetForm {
-            get { return targetform; }
-            set { targetform = value; }
+            get { return this.targetform; }
+            set { this.targetform = value; }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        public FileFilters Conditions {
-            get { return this.conditions; }
-            set { this.conditions = value; }
+        public string StartFolder {
+            get { return this.startingfolder; }
+            set { this.startingfolder = value; }
         }
+
 
         public FoldersWordFinder() {
         }
@@ -100,9 +68,9 @@ namespace Fandro2.lib.Threading {
         /// <param name="hasStoppedThread"></param>
         public FoldersWordFinder(ManualResetEvent stopthread, ManualResetEvent hasstoppedthread) : this() {
             // signals if thread is going to be stopped from UI
-            stopThread = stopthread;
+            this.StopWorkResetEvent = stopthread;
             // signals if thread has stopped internally
-            threadHasStopped = hasstoppedthread;
+            this.FinishedWorkResetEvent = hasstoppedthread;
         }
 
 
@@ -110,140 +78,10 @@ namespace Fandro2.lib.Threading {
         /// 
         /// </summary>
         /// <returns></returns>
-        private bool okToContinue() {
-            return targetform != null && startingfolder != null && mask != null;
+        protected override bool IsOKToContinue() {
+            return this.targetform != null && this.startingfolder != null &&  this.mask != null;
         }
 
-        /// <summary>
-        /// Long variant...
-        /// </summary>
-        /// <param name="text"></param>
-        /// <param name="file"></param>
-        /// <returns></returns>
-        private long findTextPointersLong(string text, FileInfo file) {
-            long ret = -1;
-
-            try {
-                using (MemoryMappedFile memfile = MemoryMappedFile.CreateFromFile(
-                      file.FullName, FileMode.Open, null, 0, MemoryMappedFileAccess.Read)) {
-                    try {
-                        using (MemoryMappedViewAccessor accessor = memfile.CreateViewAccessor(
-                            0, file.Length, MemoryMappedFileAccess.Read)) {
-                            // do your fancy Boyer-Moore-Horspool search against the memory mapped file/pointers
-                            ret = boyerMooreHorspoolPointersLong(text, accessor, file.Length);
-                        }
-                    }
-                    catch (Exception ex) {
-                        Trace.TraceError(ex.Message + " -- " + file.FullName + " - " + file.Length);
-                    }
-                }
-            }
-            catch (Exception ex) {
-                Trace.TraceError(ex.Message + " -- " + file.FullName + " - " + file.Length);
-            }
-
-            return ret;
-        }
-
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="text"></param>
-        /// <param name="accessor"></param>
-        /// <param name="size"></param>
-        /// <returns></returns>
-        unsafe private long boyerMooreHorspoolPointersLong(string text, MemoryMappedViewAccessor accessor, long size) {
-            long ret = 0;
-
-            if (!casesensitive) {
-                pattern = pattern.ToUpper();
-            }
-
-            byte* ptrMemMap = (byte*)0;
-
-            accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref ptrMemMap);
-
-
-            int[] bad_shift = new int[char.MaxValue + 1];
-
-
-            for (int i = 0; i < char.MaxValue + 1; i++) {
-                bad_shift[i] = pattern.Length;
-            }
-
-            int last = pattern.Length - 1;
-
-            for (int i = 0; i < last; i++) {
-                bad_shift[pattern[i]] = last - i;
-            }
-
-            int patlength = pattern.Length;
-            long pos = patlength - 1;
-            char lastchar;
-            int numskip = 0;
-            bool found = false;
-
-            if (pos != 0) {
-                ret = -1;
-                lastchar = pattern[patlength - 1];
-                while (pos < size) {
-
-                    if (stopThread.WaitOne(0, true)) {
-                        ret = -666;
-                        break;
-                    }
-                    char tmpchar = '0';
-
-                    if (!casesensitive) {
-                        tmpchar = char.ToUpper(Convert.ToChar(ptrMemMap[pos]));
-                    }
-                    else {
-                        tmpchar = Convert.ToChar(ptrMemMap[pos]);
-                    }
-
-
-
-                    if (tmpchar != lastchar) {
-                        numskip = bad_shift[tmpchar];
-                    }
-                    else {
-                        int i = patlength - 1;
-                        found = true;
-                        numskip = patlength;
-                        while (i > 0) {
-                            pos--;
-
-                            if (!casesensitive) {
-                                tmpchar = char.ToUpper(Convert.ToChar(ptrMemMap[pos]));
-                            }
-                            else {
-                                tmpchar = Convert.ToChar(ptrMemMap[pos]);
-                            }
-
-                            if (tmpchar != pattern[i - 1]) {
-                                found = false;
-                                numskip = patlength - i + bad_shift[lastchar];
-                                break;
-                            }
-                            i--;
-                        }
-                    }
-
-                    if (found) {
-                        ret = pos;
-                        return ret;
-                    }
-                    pos += numskip;
-                    
-                }
-
-            }
-
-
-            return ret;
-
-        }
 
 
         /// <summary>
@@ -273,7 +111,7 @@ namespace Fandro2.lib.Threading {
             updateStatusBarCount();
             updateDurationTime();
             updateThreadIsRunning(false);
-            threadHasStopped.Set();
+            this.FinishedWorkResetEvent.Set();
         }
 
         /// <summary>
@@ -283,7 +121,7 @@ namespace Fandro2.lib.Threading {
         /// <param name="e"></param>
         private void Findfiler_FolderProcessingEvent(object sender, FolderProcessingEventArgs e) {
             // pre entry check for reset event
-            if (stopThread.WaitOne(0, true)) {
+            if (this.StopWorkResetEvent.WaitOne(0, true)) {
                 if (findfiler != null) {
                     e.Cancelled = true;
                 }
@@ -302,22 +140,22 @@ namespace Fandro2.lib.Threading {
             bool bconditions = true;
 
             // pre entry check for reset event
-            if (stopThread.WaitOne(0, true)) {
+            if (this.StopWorkResetEvent.WaitOne(0, true)) {
                 if (findfiler != null) {
                     e.Cancelled = true;
                 }
             }
 
             // check pre conditions first and run against matchers.
-            if (this.conditions != null && this.conditions.Count > 0) {
-                this.conditions.FileInformation = e.FileInfo;
-                bconditions = this.conditions.DoMatch();
+            if (this.Conditions != null && this.Conditions.Count > 0) {
+                this.Conditions.FileInformation = e.FileInfo;
+                bconditions = this.Conditions.DoMatch();
             }
           
 
             // che
             // ^^^ Wait what was that comment for?
-            if (stopThread.WaitOne(0, true)) {
+            if (this.StopWorkResetEvent.WaitOne(0, true)) {
                 if (findfiler != null) {
                     e.Cancelled = true;
                 }
@@ -326,8 +164,8 @@ namespace Fandro2.lib.Threading {
             updateStatusBarFilesFound(e.FileInfo.FullName + " " + (bconditions == true? "(match)" : "(no match)"));
             // we'll need at least data in the file...
             if (e.FileInfo.Length > 0 && bconditions == true) {
-                if (!String.IsNullOrEmpty(pattern)) {
-                    long position = findTextPointersLong(pattern, e.FileInfo);
+                if (!String.IsNullOrEmpty(this.Pattern)) {
+                    long position = this.FindTextPointersLong(this.Pattern, e.FileInfo);
                     if (position > -1) {
                         updateListView(e.FileInfo, position);
                         count++;
@@ -346,33 +184,25 @@ namespace Fandro2.lib.Threading {
             }
             // otherwise ignore...
 
-            if (stopThread.WaitOne(0, true)) {
+            if (this.StopWorkResetEvent.WaitOne(0, true)) {
                 if (findfiler != null) {
                     e.Cancelled = true;
                 }
             }
         }
 
-
         /// <summary>
         /// 
         /// </summary>
-        public Thread CurrentThread {
-            get { return nthread; }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public void Execute() {
-            if (okToContinue()) {
+        public override void Execute() {
+            if (this.IsOKToContinue()) {
 
                 // disable main controls
                 updateThreadIsRunning(true);
-                nthread = new Thread(getAllFiles);
-                nthread.Name = "Fandro2_" + Guid.NewGuid();
-                duration = DateTime.Now;
-                nthread.Start();
+                this.CurrentThread = new Thread(getAllFiles);
+                this.CurrentThread.Name = "Fandro2_" + Guid.NewGuid();
+                this.Duration = DateTime.Now;
+                this.CurrentThread.Start();
             }
         }
 
@@ -423,7 +253,7 @@ namespace Fandro2.lib.Threading {
 
             }
             else {
-                targetform.StatusBar.Items[1].Text = duration.ToString("G");
+                targetform.StatusBar.Items[1].Text = this.Duration.ToString("G");
             }
 
         }
@@ -437,7 +267,7 @@ namespace Fandro2.lib.Threading {
 
             }
             else {
-                TimeSpan p = DateTime.Now.Subtract(duration);
+                TimeSpan p = DateTime.Now.Subtract(this.Duration);
                 targetform.StatusBar.Items[1].Text = p.ToString();
             }
         }

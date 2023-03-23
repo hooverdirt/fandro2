@@ -335,7 +335,7 @@
             // 
             startToolStripMenuItem.Image = (System.Drawing.Image)resources.GetObject("startToolStripMenuItem.Image");
             startToolStripMenuItem.Name = "startToolStripMenuItem";
-            startToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            startToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
             startToolStripMenuItem.Text = "Start";
             startToolStripMenuItem.Click += startToolStripMenuItem_Click;
             // 
@@ -344,7 +344,7 @@
             stopToolStripMenuItem.Enabled = false;
             stopToolStripMenuItem.Image = (System.Drawing.Image)resources.GetObject("stopToolStripMenuItem.Image");
             stopToolStripMenuItem.Name = "stopToolStripMenuItem";
-            stopToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            stopToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
             stopToolStripMenuItem.Text = "Stop";
             stopToolStripMenuItem.Click += stopToolStripMenuItem_Click;
             // 
@@ -359,7 +359,7 @@
             // 
             preferencesToolStripMenuItem.Image = (System.Drawing.Image)resources.GetObject("preferencesToolStripMenuItem.Image");
             preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
-            preferencesToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            preferencesToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             preferencesToolStripMenuItem.Text = "Preferences...";
             // 
             // helpToolStripMenuItem
@@ -834,7 +834,7 @@
             // 
             fileToolStripMenuItem1.Image = (System.Drawing.Image)resources.GetObject("fileToolStripMenuItem1.Image");
             fileToolStripMenuItem1.Name = "fileToolStripMenuItem1";
-            fileToolStripMenuItem1.Size = new System.Drawing.Size(160, 22);
+            fileToolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
             fileToolStripMenuItem1.Text = "File...";
             fileToolStripMenuItem1.Click += fileToolStripMenuItem1_Click;
             // 
@@ -842,20 +842,20 @@
             // 
             folderToolStripMenuItem.Image = (System.Drawing.Image)resources.GetObject("folderToolStripMenuItem.Image");
             folderToolStripMenuItem.Name = "folderToolStripMenuItem";
-            folderToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            folderToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             folderToolStripMenuItem.Text = "Folder...";
             folderToolStripMenuItem.Click += folderToolStripMenuItem_Click;
             // 
             // toolStripMenuItem2
             // 
             toolStripMenuItem2.Name = "toolStripMenuItem2";
-            toolStripMenuItem2.Size = new System.Drawing.Size(157, 6);
+            toolStripMenuItem2.Size = new System.Drawing.Size(177, 6);
             // 
             // explorerMenuToolStripMenuItem
             // 
             explorerMenuToolStripMenuItem.Image = (System.Drawing.Image)resources.GetObject("explorerMenuToolStripMenuItem.Image");
             explorerMenuToolStripMenuItem.Name = "explorerMenuToolStripMenuItem";
-            explorerMenuToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            explorerMenuToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             explorerMenuToolStripMenuItem.Text = "Explorer Menu...";
             explorerMenuToolStripMenuItem.Click += explorerMenuToolStripMenuItem_Click;
             // 
