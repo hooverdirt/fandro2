@@ -1,4 +1,5 @@
-﻿using Fandro2.lib.Matching;
+﻿using Fandro2.lib.Interfaces;
+using Fandro2.lib.Matching;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,17 +13,9 @@ using System.Windows.Forms;
 using System.Windows.Forms.Design;
 
 namespace Fandro2.lib.Threading {
-    public class FileSetWordFinder {
+    public class FileSetWordFinder : BaseFileWordFinder {
         List<string> fileset = new List<string>();
-        private ManualResetEvent stopThread;
-        private ManualResetEvent threadHasStopped;
-        private string pattern = null;
-        private bool casesensitive = false;
-        private DateTime duration = DateTime.MinValue;
-        private FileFilters conditions;
-        private Form targetform;
-        private Thread nthread = null;
-        private int count = 0;
+        private IFandroFindForm targetform;
 
         public FileSetWordFinder() { }
 
@@ -34,48 +27,17 @@ namespace Fandro2.lib.Threading {
         /// <param name="threadHasStopped"></param>
         public FileSetWordFinder(List<string> fileset, ManualResetEvent stopThread, ManualResetEvent threadHasStopped) { 
             this.fileset = fileset;
-            this.stopThread = stopThread;
-            this.threadHasStopped = threadHasStopped;
+            this.StopWorkResetEvent = stopThread;
+            this.FinishedWorkResetEvent = threadHasStopped;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        public string Pattern { 
-            get { return pattern; } 
-            set {  pattern = value; } 
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public bool CaseSensitive {
-            get { return casesensitive; }
-            set { casesensitive = value; }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public FileFilters Conditions {
-            get { return this.conditions; }
-            set { this.conditions = value; }
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public Thread CurrentThread {
-            get { return nthread; }
-            set { this.nthread = value; }
-        }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        protected virtual bool isOKToContinue() {
-            return targetform != null && pattern != null && this.fileset.Count > 0;
+        protected override bool IsOKToContinue() {
+            return this.targetform != null && this.Pattern != null && this.fileset.Count > 0;
         }
 
         /// <summary>
@@ -85,11 +47,11 @@ namespace Fandro2.lib.Threading {
         /// <param name="accessor"></param>
         /// <param name="size"></param>
         /// <returns></returns>
-        unsafe private long boyerMooreHorspoolPointersLong(string text, MemoryMappedViewAccessor accessor, long size) {
+        unsafe virtual protected long boyerMooreHorspoolPointersLong(string text, MemoryMappedViewAccessor accessor, long size) {
             long ret = 0;
 
-            if (!casesensitive) {
-                pattern = pattern.ToUpper();
+            if (!this.CaseSensitive) {
+                this.Pattern = this.Pattern.ToUpper();
             }
 
             byte* ptrMemMap = (byte*)0;
@@ -101,16 +63,16 @@ namespace Fandro2.lib.Threading {
 
 
             for (int i = 0; i < char.MaxValue + 1; i++) {
-                bad_shift[i] = pattern.Length;
+                bad_shift[i] = this.Pattern.Length;
             }
 
-            int last = pattern.Length - 1;
+            int last = this.Pattern.Length - 1;
 
             for (int i = 0; i < last; i++) {
-                bad_shift[pattern[i]] = last - i;
+                bad_shift[this.Pattern[i]] = last - i;
             }
 
-            int patlength = pattern.Length;
+            int patlength = this.Pattern.Length;
             long pos = patlength - 1;
             char lastchar;
             int numskip = 0;
@@ -118,16 +80,16 @@ namespace Fandro2.lib.Threading {
 
             if (pos != 0) {
                 ret = -1;
-                lastchar = pattern[patlength - 1];
+                lastchar = this.Pattern[patlength - 1];
                 while (pos < size) {
 
-                    if (stopThread.WaitOne(0, true)) {
+                    if (this.StopWorkResetEvent.WaitOne(0, true)) {
                         ret = -666;
                         break;
                     }
                     char tmpchar = '0';
 
-                    if (!casesensitive) {
+                    if (!this.CaseSensitive) {
                         tmpchar = char.ToUpper(Convert.ToChar(ptrMemMap[pos]));
                     }
                     else {
@@ -146,14 +108,14 @@ namespace Fandro2.lib.Threading {
                         while (i > 0) {
                             pos--;
 
-                            if (!casesensitive) {
+                            if (!this.CaseSensitive) {
                                 tmpchar = char.ToUpper(Convert.ToChar(ptrMemMap[pos]));
                             }
                             else {
                                 tmpchar = Convert.ToChar(ptrMemMap[pos]);
                             }
 
-                            if (tmpchar != pattern[i - 1]) {
+                            if (tmpchar != this.Pattern[i - 1]) {
                                 found = false;
                                 numskip = patlength - i + bad_shift[lastchar];
                                 break;
@@ -211,25 +173,22 @@ namespace Fandro2.lib.Threading {
         /// <summary>
         /// 
         /// </summary>
-        public virtual void Execute() {
-            if (this.isOKToContinue()) {
-                this.nthread = new Thread(doWork);
-                nthread.Start();
-                nthread.Name = "Fandro2_fileset_" + Guid.NewGuid();
-                duration = DateTime.Now;
-                nthread.Start();
-                this.doWork();
+        public override void Execute() {
+            if (this.IsOKToContinue()) {
+                this.CurrentThread = new Thread(this.DoWork);
+                this.CurrentThread.Name = "Fandro2_fileset_" + Guid.NewGuid();
+                this.Duration = DateTime.Now;
+                this.CurrentThread.Start();
             }
         }
 
         /// <summary>
         /// 
         /// </summary>
-        /// <exception cref="NotImplementedException"></exception>
-        public virtual void doWork() {
+        protected override void DoWork() {
             this.initializeDurationTime();
             foreach (String s in  this.fileset) {
-                if (stopThread.WaitOne(0, true)) {
+                if (this.StopWorkResetEvent.WaitOne(0, true)) {
                     // AHTODO
                     break;
                 }
@@ -241,17 +200,17 @@ namespace Fandro2.lib.Threading {
                     bool bconditions = true;
                     // do all the legwork...
                     // check pre conditions first and run against matchers.
-                    if (this.conditions != null && this.conditions.Count > 0) {
-                        this.conditions.FileInformation = p;
-                        bconditions = this.conditions.DoMatch();
+                    if (this.Conditions != null && this.Conditions.Count > 0) {
+                        this.Conditions.FileInformation = p;
+                        bconditions = this.Conditions.DoMatch();
                     }
 
                     if (p.Length > 0 && bconditions == true) {
-                        if (!String.IsNullOrEmpty(pattern)) {
-                            long position = this.findTextPointersLong(pattern, p);
+                        if (!String.IsNullOrEmpty(this.Pattern)) {
+                            long position = this.findTextPointersLong(this.Pattern, p);
                             if (position > -1) {
                                 //updateListView(e.FileInfo, position);
-                                count++;
+                                this.Count++;
                             }
                             else {
                                 if (position == -666) {
@@ -262,14 +221,14 @@ namespace Fandro2.lib.Threading {
                             }
                         }
 
-                        if (stopThread.WaitOne(0, true)) {
+                        if (this.StopWorkResetEvent.WaitOne(0, true)) {
                             // AHTODO
                             break;
                         }
                     }
                 }
 
-                if (stopThread.WaitOne(0, true)) {
+                if (this.StopWorkResetEvent.WaitOne(0, true)) {
                     // AHTODO
                     break;
                 }
@@ -279,7 +238,7 @@ namespace Fandro2.lib.Threading {
             updateStatusBarCount();
             updateDurationTime();
             updateThreadIsRunning(false);
-            threadHasStopped.Set();
+            this.FinishedWorkResetEvent.Set();
         }
 
         /// <summary>
