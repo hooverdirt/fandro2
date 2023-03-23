@@ -59,6 +59,7 @@ namespace Fandro2.lib.Threading {
         /// </summary>
         public DateTime Duration {
            get { return this.duration; }
+           set { this.duration = value; }
         }
 
         /// <summary>
@@ -82,6 +83,7 @@ namespace Fandro2.lib.Threading {
         /// </summary>
         public int Count {
             get { return this.count; }
+            set { this.count = value; }
         }
 
         /// <summary>
