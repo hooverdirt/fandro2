@@ -1,4 +1,5 @@
-﻿using Fandro2.lib.Matching;
+﻿using Fandro2.lib.Interfaces;
+using Fandro2.lib.Matching;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,7 +15,7 @@ using System.Windows.Forms.Design;
 namespace Fandro2.lib.Threading {
     public class FileSetWordFinder : BaseFileWordFinder {
         List<string> fileset = new List<string>();
-        private Form targetform;
+        private IFandroFindForm targetform;
 
         public FileSetWordFinder() { }
 
