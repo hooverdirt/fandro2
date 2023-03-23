@@ -165,10 +165,10 @@ namespace Fandro2.lib.Threading {
             // we'll need at least data in the file...
             if (e.FileInfo.Length > 0 && bconditions == true) {
                 if (!String.IsNullOrEmpty(this.Pattern)) {
+                    count++;
                     long position = this.FindTextPointersLong(this.Pattern, e.FileInfo);
                     if (position > -1) {
                         updateListView(e.FileInfo, position);
-                        count++;
                     }
                     else {
                         if (position == -666) {
@@ -227,7 +227,7 @@ namespace Fandro2.lib.Threading {
                 targetform.StatusBar.Invoke(new StringInvoker(updateStatusBarFilesFound), new object[] { text });
             }
             else {
-                targetform.StatusBar.Items[0].Text = targetform.FilesView.Items.Count.ToString();
+                targetform.StatusBar.Items[0].Text = String.Format("{0}/{1}", targetform.FilesView.Items.Count, this.count);
                 targetform.StatusBar.Items[2].Text = text;
             }
         }
@@ -240,7 +240,7 @@ namespace Fandro2.lib.Threading {
                 targetform.StatusBar.Invoke(new MethodInvoker(updateStatusBarCount));
             }
             else {
-                targetform.StatusBar.Items[0].Text = targetform.FilesView.Items.Count.ToString();
+                targetform.StatusBar.Items[0].Text = String.Format("{0}/{1}", targetform.FilesView.Items.Count, this.count);
             }
         }
 
