@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Fandro2.lib.Interfaces {
-    public interface IFandroFindForm {
-        public bool FormInvokeRequired { get; }
+    public interface IFandroFindForm  {
+        public bool FormInvokeRequired { get; }        
         public StatusStrip StatusBar { get; set; }
         public ListView FilesView { get; set; }  
         public void SetControlsWhileThreading(bool stopping);

@@ -14,12 +14,13 @@ using static System.Net.Mime.MediaTypeNames;
 using Fandro2.lib.Finding;
 using Fandro2.lib.Matching;
 using System.ComponentModel.Design;
+using Fandro2.lib.Interfaces;
 
 namespace Fandro2.lib.Threading {
     public class FoldersWordFinder : BaseFileWordFinder {
         private string startingfolder = null;
         private bool recursive = false;
-        private mainForm targetform = null;
+        private Form targetform = null;
         private FileFinder findfiler = null;
         private int count = 0;
         private string mask = null;
@@ -44,7 +45,7 @@ namespace Fandro2.lib.Threading {
         /// <summary>
         /// 
         /// </summary>
-        public mainForm TargetForm {
+        public Form TargetForm {
             get { return this.targetform; }
             set { this.targetform = value; }
         }
@@ -214,7 +215,7 @@ namespace Fandro2.lib.Threading {
                 targetform.Invoke(new BooleanInvoker(updateThreadIsRunning), new object[] { stopping });
             }
             else {
-                targetform.SetControlsWhileThreading(stopping);
+                (targetform as IFandroFindForm).SetControlsWhileThreading(stopping);
             }
         }
 
@@ -223,12 +224,13 @@ namespace Fandro2.lib.Threading {
         /// </summary>
         /// <param name="text"></param>
         private void updateStatusBarFilesFound(string text) {
-            if (targetform.StatusBar.InvokeRequired) {
-                targetform.StatusBar.Invoke(new StringInvoker(updateStatusBarFilesFound), new object[] { text });
+            if ((targetform as IFandroFindForm).StatusBar.InvokeRequired) {
+                (targetform as IFandroFindForm).StatusBar.Invoke(new StringInvoker(updateStatusBarFilesFound), new object[] { text });
             }
             else {
-                targetform.StatusBar.Items[0].Text = String.Format("{0}/{1}", targetform.FilesView.Items.Count, this.count);
-                targetform.StatusBar.Items[2].Text = text;
+                (targetform as IFandroFindForm).StatusBar.Items[0].Text = String.Format("{0}/{1}", 
+                    (targetform as IFandroFindForm).FilesView.Items.Count, this.count);
+                (targetform as IFandroFindForm).StatusBar.Items[2].Text = text;
             }
         }
 
@@ -236,11 +238,12 @@ namespace Fandro2.lib.Threading {
         /// 
         /// </summary>
         private void updateStatusBarCount() {
-            if (targetform.StatusBar.InvokeRequired) {
-                targetform.StatusBar.Invoke(new MethodInvoker(updateStatusBarCount));
+            if ((targetform as IFandroFindForm).StatusBar.InvokeRequired) {
+                (targetform as IFandroFindForm).StatusBar.Invoke(new MethodInvoker(updateStatusBarCount));
             }
             else {
-                targetform.StatusBar.Items[0].Text = String.Format("{0}/{1}", targetform.FilesView.Items.Count, this.count);
+                (targetform as IFandroFindForm).StatusBar.Items[0].Text = String.Format("{0}/{1}", 
+                    (targetform as IFandroFindForm).FilesView.Items.Count, this.count);
             }
         }
 
@@ -248,12 +251,12 @@ namespace Fandro2.lib.Threading {
         /// 
         /// </summary>
         private void initializeDurationTime() {
-            if (targetform.StatusBar.InvokeRequired) {
-                targetform.StatusBar.Invoke(new MethodInvoker(initializeDurationTime), new object[] { });
+            if ((targetform as IFandroFindForm).StatusBar.InvokeRequired) {
+                (targetform as IFandroFindForm).StatusBar.Invoke(new MethodInvoker(initializeDurationTime), new object[] { });
 
             }
             else {
-                targetform.StatusBar.Items[1].Text = this.Duration.ToString("G");
+                (targetform as IFandroFindForm).StatusBar.Items[1].Text = this.Duration.ToString("G");
             }
 
         }
@@ -262,13 +265,13 @@ namespace Fandro2.lib.Threading {
         /// 
         /// </summary>
         private void updateDurationTime() {
-            if (targetform.StatusBar.InvokeRequired) {
-                targetform.StatusBar.Invoke(new MethodInvoker(updateDurationTime), new object[] { });
+            if ((targetform as IFandroFindForm).StatusBar.InvokeRequired) {
+                (targetform as IFandroFindForm).StatusBar.Invoke(new MethodInvoker(updateDurationTime), new object[] { });
 
             }
             else {
                 TimeSpan p = DateTime.Now.Subtract(this.Duration);
-                targetform.StatusBar.Items[1].Text = p.ToString();
+                (targetform as IFandroFindForm).StatusBar.Items[1].Text = p.ToString();
             }
         }
         /// <summary>
@@ -276,8 +279,8 @@ namespace Fandro2.lib.Threading {
         /// </summary>
         /// <param name="info"></param>
         private void updateListView(FileInfo info, long position) {
-            if (targetform.FilesView.InvokeRequired) {
-                targetform.FilesView.Invoke(new FileFindSystemInfoInvoker(updateListView), new object[] { info, position });
+            if ((targetform as IFandroFindForm).FilesView.InvokeRequired) {
+                (targetform as IFandroFindForm).FilesView.Invoke(new FileFindSystemInfoInvoker(updateListView), new object[] { info, position });
             }
             else {
                 ListViewItem item = new ListViewItem();
@@ -292,14 +295,14 @@ namespace Fandro2.lib.Threading {
                 int i = -1;
 
                 try {
-                    bool b = targetform.FilesView.SmallImageList.Images.Keys.Contains(extension);
+                    bool b = (targetform as IFandroFindForm).FilesView.SmallImageList.Images.Keys.Contains(extension);
                     if (!b) {
                         Icon icon = Helpers.GetSmallIcon(info.FullName);
-                        targetform.FilesView.SmallImageList.Images.Add(extension, icon);
-                        i = targetform.FilesView.SmallImageList.Images.Count - 1;
+                        (targetform as IFandroFindForm).FilesView.SmallImageList.Images.Add(extension, icon);
+                        i = (targetform as IFandroFindForm).FilesView.SmallImageList.Images.Count - 1;
                     }
                     else {
-                        i = targetform.FilesView.SmallImageList.Images.IndexOfKey(extension);
+                        i = (targetform as IFandroFindForm).FilesView.SmallImageList.Images.IndexOfKey(extension);
                     }
                 }
                 catch (Exception ex) {
@@ -315,7 +318,7 @@ namespace Fandro2.lib.Threading {
                 item.SubItems.Add(info.LastWriteTimeUtc.ToLocalTime().ToString());
                 item.SubItems.Add(info.CreationTimeUtc.ToLocalTime().ToString());
                 item.SubItems.Add(info.LastAccessTimeUtc.ToLocalTime().ToString());
-                targetform.FilesView.Items.Add(item);
+                (targetform as IFandroFindForm).FilesView.Items.Add(item);
             }
         }
 
