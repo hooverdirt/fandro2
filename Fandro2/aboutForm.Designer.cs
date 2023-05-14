@@ -29,6 +29,7 @@
             label1 = new System.Windows.Forms.Label();
             pictureBox1 = new System.Windows.Forms.PictureBox();
             btnOK = new System.Windows.Forms.Button();
+            label3 = new System.Windows.Forms.Label();
             panAbout.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
@@ -36,6 +37,7 @@
             // panAbout
             // 
             panAbout.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            panAbout.Controls.Add(label3);
             panAbout.Controls.Add(label2);
             panAbout.Controls.Add(label1);
             panAbout.Controls.Add(pictureBox1);
@@ -84,6 +86,16 @@
             btnOK.Text = "OK";
             btnOK.UseVisualStyleBackColor = true;
             // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new System.Drawing.Point(120, 66);
+            label3.Name = "label3";
+            label3.Size = new System.Drawing.Size(109, 15);
+            label3.TabIndex = 3;
+            label3.Text = "Version: (unknown)";
+            label3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // aboutForm
             // 
             AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -96,6 +108,7 @@
             MinimizeBox = false;
             Name = "aboutForm";
             Text = "About";
+            Load += aboutForm_Load;
             panAbout.ResumeLayout(false);
             panAbout.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
@@ -109,5 +122,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.Label label3;
     }
 }

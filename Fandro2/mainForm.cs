@@ -815,7 +815,7 @@ namespace Fandro2 {
                         pcomb.SelectionLength = pastetext.Length;
                     }
                     else {
-                        pcomb.Text = pcomb.Text.Substring(0, i - 1) + pastetext
+                        pcomb.Text = (i - 1 >= 0 ? pcomb.Text.Substring(0, i - 1) : "") + pastetext
                             + pcomb.Text.Substring(pcomb.SelectionStart);
 
                         pcomb.SelectionStart = 0;

@@ -316,5 +316,14 @@ namespace Fandro2.lib
 
             return s;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public static FileVersionInfo GetFileVersionInfo() {
+            Assembly ap = Assembly.GetExecutingAssembly();
+            return FileVersionInfo.GetVersionInfo(ap.Location);
+        }
     } 
 }
