@@ -109,10 +109,13 @@ namespace libfandro2.lib.Controls.Folders {
             // 
             // txtFolder
             // 
+            txtFolder.AllowDrop = true;
             txtFolder.Location = new Point(0, 0);
             txtFolder.Name = "txtFolder";
             txtFolder.Size = new Size(311, 23);
             txtFolder.TabIndex = 0;
+            txtFolder.DragDrop += txtFolder_DragDrop;
+            txtFolder.DragEnter += txtFolder_DragEnter;
             // 
             // FileTextSelectionBox
             // 
