@@ -84,7 +84,7 @@ namespace libfandro2.lib.Controls.Folders {
         /// </summary>
         /// <param name="folder"></param>
         private void addMRUItem(string folder) {
-            if (folder != "" && !this.hasFolder(folder)) {
+            if (!String.IsNullOrEmpty(folder) && !this.hasFolder(folder)) {
                 ToolStripMenuItem tiem = new ToolStripMenuItem();
                 tiem.Text = folder;
                 tiem.Tag = folder;
@@ -276,6 +276,52 @@ namespace libfandro2.lib.Controls.Folders {
             }
 
             return ret;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void txtFolder_DragEnter(object sender, DragEventArgs e) {
+            DragDropEffects efx = DragDropEffects.None;
+
+            if (e.Data != null && e.Data.GetDataPresent(DataFormats.FileDrop)) {
+                string[] folders = (string[])e.Data.GetData(DataFormats.FileDrop);
+                bool b = true;
+                foreach (string folder in folders) {
+                    b &= (Directory.Exists(folder));
+                }
+
+                if (b) {
+                    efx = DragDropEffects.Copy;
+                }
+            }
+
+            e.Effect = efx;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void txtFolder_DragDrop(object sender, DragEventArgs e) {
+            if (e.Data != null && e.Data.GetDataPresent(DataFormats.FileDrop)) {
+                string[] folders = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                if ((e.KeyState & 8) == 8 
+                    && this.SelectionMode == FolderSelectionMode.MultipleFolders) {                    
+                    List<string> intermediate = this.SelectedFolders;
+                    // do not add duplicate folders
+                    intermediate.AddUnique(folders);
+                    this.SelectedFolders = intermediate;
+                }
+                else {
+                    this.setFolderSelectionMode(FolderSelectionMode.MultipleFolders);
+                    this.SelectedFolders = folders.ToList<string>();
+                }
+            }
         }
 
         /// <summary>

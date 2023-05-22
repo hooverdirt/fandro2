@@ -45,7 +45,7 @@ namespace libfandro2.lib.Controls.Folders {
             toolStripFileModes.Items.AddRange(new ToolStripItem[] { tbbSingleFileMode, tbbMultiFileMode, toolStripSeparator1, tbbSelectFolder, toolStripSeparator2, tbbRecentFolders });
             toolStripFileModes.Location = new Point(314, 0);
             toolStripFileModes.Name = "toolStripFileModes";
-            toolStripFileModes.Size = new Size(144, 25);
+            toolStripFileModes.Size = new Size(113, 25);
             toolStripFileModes.TabIndex = 1;
             toolStripFileModes.TabStop = true;
             toolStripFileModes.Text = "toolStrip1";
@@ -109,10 +109,13 @@ namespace libfandro2.lib.Controls.Folders {
             // 
             // txtFolder
             // 
+            txtFolder.AllowDrop = true;
             txtFolder.Location = new Point(0, 0);
             txtFolder.Name = "txtFolder";
             txtFolder.Size = new Size(311, 23);
             txtFolder.TabIndex = 0;
+            txtFolder.DragDrop += txtFolder_DragDrop;
+            txtFolder.DragEnter += txtFolder_DragEnter;
             // 
             // FileTextSelectionBox
             // 
@@ -123,7 +126,7 @@ namespace libfandro2.lib.Controls.Folders {
             Controls.Add(txtFolder);
             Controls.Add(toolStripFileModes);
             Name = "FileTextSelectionBox";
-            Size = new Size(458, 26);
+            Size = new Size(427, 26);
             toolStripFileModes.ResumeLayout(false);
             toolStripFileModes.PerformLayout();
             ResumeLayout(false);

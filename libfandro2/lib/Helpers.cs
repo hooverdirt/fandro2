@@ -325,5 +325,18 @@ namespace libfandro2.lib
             Assembly ap = Assembly.GetExecutingAssembly();
             return FileVersionInfo.GetVersionInfo(ap.Location);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="currentlist"></param>
+        /// <param name="items"></param>
+        public static void AddUnique<T>(this IList<T> currentlist, IEnumerable<T> items) {
+            foreach (T? item in items)
+                if (!currentlist.Contains(item)) { 
+                    currentlist.Add(item); 
+                }
+        }
     } 
 }

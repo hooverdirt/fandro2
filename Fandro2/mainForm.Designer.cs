@@ -84,7 +84,7 @@
             ftextFolders = new libfandro2.lib.Controls.Folders.FileTextSelectionBox();
             TabFileControl = new System.Windows.Forms.TabPage();
             panel1 = new System.Windows.Forms.Panel();
-            gridControls = new global::libfandro2.lib.Controls.Conditions.ControlGrid();
+            gridControls = new libfandro2.lib.Controls.Conditions.ControlGrid();
             panel2 = new System.Windows.Forms.Panel();
             panel3 = new System.Windows.Forms.Panel();
             btnClearAll = new System.Windows.Forms.Button();
