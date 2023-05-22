@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Update="lib\Controls\Conditions\ControlGrid.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="lib\Controls\Conditions\NumericUpDownFile.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="lib\Controls\Conditions\SelectableDataRow.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="lib\Controls\Folders\FileTextSelectionBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="lib\Controls\Folders\frmMultiFolderEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="lib\Controls\Folders\ToolBarRadioButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+  </ItemGroup>
+
+</Project>

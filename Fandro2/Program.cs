@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using Fandro2.lib.Finding;
+using libfandro2.lib.Finding;
 
 namespace Fandro2
 {

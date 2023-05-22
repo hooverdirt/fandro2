@@ -35,3 +35,7 @@
 /fandro2obj
 /Fandro2/bin/Release/net6.0-windows
 /.vs/Fandro2/config
+/libfandro2/bin/Debug/net6.0-windows/libfandro2.deps.json
+/libfandro2/bin/Debug/net6.0-windows
+/libfandro2/obj/Debug/net6.0-windows
+/libfandro2/obj

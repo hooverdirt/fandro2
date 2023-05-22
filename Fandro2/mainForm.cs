@@ -9,15 +9,15 @@ using System.Windows.Forms;
 using Fandro2.lib;
 using System.Threading;
 using System.IO;
-using Fandro2.lib.WinAPI;
-using Fandro2.lib.Finding;
-using Fandro2.lib.Threading;
+using libfandro2.lib.WinAPI;
+using libfandro2.lib.Finding;
+using libfandro2.lib.Threading;
 using System.Linq.Expressions;
-using lib.Controls.Conditions;
-using lib.Controls.Conditions.Classes;
+using libfandro2.lib.Controls.Conditions;
+using libfandro2.lib.Controls.Conditions.Classes;
 using System.Collections;
-using Fandro2.lib.Controls.Folders;
-using Fandro2.lib.Interfaces;
+using libfandro2.lib.Controls.Folders;
+using libfandro2.lib.Interfaces;
 
 namespace Fandro2 {
     public partial class mainForm : Form, IFandroFindForm {
@@ -189,7 +189,7 @@ namespace Fandro2 {
         private void clearScreen() {
             this.cboFileMask.Text = "";
             // this should clear everything...
-            this.ftextFolders.SelectionMode = lib.Controls.Folders.FileTextSelectionBox.FolderSelectionMode.SingleFolder;
+            this.ftextFolders.SelectionMode = libfandro2.lib.Controls.Folders.FileTextSelectionBox.FolderSelectionMode.SingleFolder;
             this.cboPattern.Text = "";
             this.lvwSearchResults.Items.Clear();
             this.chkCaseSensitive.Checked = false;
@@ -231,7 +231,7 @@ namespace Fandro2 {
             finder.Mask = this.cboFileMask.Text;
             finder.Recursive = this.chkSubfolders.Checked;
 
-            finder.StartFolder = this.ftextFolders.SelectionMode == lib.Controls.Folders.FileTextSelectionBox.FolderSelectionMode.SingleFolder ?
+            finder.StartFolder = this.ftextFolders.SelectionMode == libfandro2.lib.Controls.Folders.FileTextSelectionBox.FolderSelectionMode.SingleFolder ?
                 this.ftextFolders.SelectedFolder : String.Join(";", this.ftextFolders.SelectedFolders);
             finder.TargetForm = this;
             finder.Pattern = cboPattern.Text;
@@ -239,8 +239,8 @@ namespace Fandro2 {
 
             // set conditions
             finder.Conditions = gridControls.Items.ToMatcher(
-                rdBtnOr.Checked ? lib.Matching.MatcherEnums.MatcherOperator.Or :
-                    lib.Matching.MatcherEnums.MatcherOperator.And);
+                rdBtnOr.Checked ? libfandro2.lib.Matching.MatcherEnums.MatcherOperator.Or :
+                    libfandro2.lib.Matching.MatcherEnums.MatcherOperator.And);
 
             // run finder thread
             finder.Execute();
@@ -464,25 +464,25 @@ namespace Fandro2 {
 
             items.Add(new FilePropertyItem {
                 Name = "Creation date",
-                MatcherType = lib.Matching.MatcherEnums.MatcherType.FileCreateTime,
+                MatcherType = libfandro2.lib.Matching.MatcherEnums.MatcherType.FileCreateTime,
                 ValueType = typeof(DateTime)
             });
 
             items.Add(new FilePropertyItem {
                 Name = "Modification date",
-                MatcherType = lib.Matching.MatcherEnums.MatcherType.FileModTime,
+                MatcherType = libfandro2.lib.Matching.MatcherEnums.MatcherType.FileModTime,
                 ValueType = typeof(DateTime)
             });
 
             items.Add(new FilePropertyItem {
                 Name = "Access date",
-                MatcherType = lib.Matching.MatcherEnums.MatcherType.FileAccessTime,
+                MatcherType = libfandro2.lib.Matching.MatcherEnums.MatcherType.FileAccessTime,
                 ValueType = typeof(DateTime)
             });
 
             items.Add(new FilePropertyItem {
                 Name = "Size",
-                MatcherType = lib.Matching.MatcherEnums.MatcherType.FileSize,
+                MatcherType = libfandro2.lib.Matching.MatcherEnums.MatcherType.FileSize,
                 ValueType = typeof(Int32)
             });
 
@@ -498,23 +498,23 @@ namespace Fandro2 {
 
             items.Add(new OperatorItem {
                 Name = "equals to",
-                Operator = lib.Matching.MatcherEnums.MatcherAction.Equals
+                Operator = libfandro2.lib.Matching.MatcherEnums.MatcherAction.Equals
             });
 
             items.Add(new OperatorItem {
                 Name = "not equals to",
-                Operator = lib.Matching.MatcherEnums.MatcherAction.NotEquals
+                Operator = libfandro2.lib.Matching.MatcherEnums.MatcherAction.NotEquals
             });
 
             items.Add(new OperatorItem {
                 Name = "greater than",
-                Operator = lib.Matching.MatcherEnums.MatcherAction.Greater
+                Operator = libfandro2.lib.Matching.MatcherEnums.MatcherAction.Greater
 
             });
 
             items.Add(new OperatorItem {
                 Name = "less than",
-                Operator = lib.Matching.MatcherEnums.MatcherAction.Less
+                Operator = libfandro2.lib.Matching.MatcherEnums.MatcherAction.Less
             });
 
             return items;
