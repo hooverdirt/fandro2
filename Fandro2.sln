@@ -5,7 +5,12 @@ VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fandro2", "Fandro2\Fandro2.csproj", "{AE88C465-8F99-44C6-AA34-5EB571E089E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "libfandro2", "libfandro2\libfandro2.csproj", "{A1196FAA-9621-46F3-937D-165A64EAAA3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "libfandro2", "libfandro2\libfandro2.csproj", "{A1196FAA-9621-46F3-937D-165A64EAAA3B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9071E39E-3DDE-46E4-A334-060FC4DB7DA1}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
