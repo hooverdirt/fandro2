@@ -18,7 +18,7 @@ using System.Diagnostics;
 using static libfandro2.lib.WinAPI.ShellAPI;
 using static System.Windows.Forms.ListViewItem;
 
-namespace Fandro2.lib
+namespace libfandro2.lib
 {
     public static class Helpers {
         public const string FANDRO2OBJECTFILE = "fandro2obj.dll";
@@ -55,7 +55,7 @@ namespace Fandro2.lib
 
             ShellAPI.SHFILEINFO shinfo = new ShellAPI.SHFILEINFO();
 
-            IntPtr hsmallimage = libfandro2.lib.WinAPI.ShellAPI.SHGetFileInfo(filename, 0, ref shinfo, Marshal.SizeOf(shinfo),
+            IntPtr hsmallimage = WinAPI.ShellAPI.SHGetFileInfo(filename, 0, ref shinfo, Marshal.SizeOf(shinfo),
                 ShellAPI.SHGFI_ICON | ShellAPI.SHGFI_SMALLICON);
 
             icon = Icon.FromHandle(shinfo.hIcon);

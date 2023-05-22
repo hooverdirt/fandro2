@@ -81,10 +81,10 @@
             groupBox1 = new System.Windows.Forms.GroupBox();
             chkCaseSensitive = new System.Windows.Forms.CheckBox();
             chkSubfolders = new System.Windows.Forms.CheckBox();
-            ftextFolders = new lib.Controls.Folders.FileTextSelectionBox();
+            ftextFolders = new libfandro2.lib.Controls.Folders.FileTextSelectionBox();
             TabFileControl = new System.Windows.Forms.TabPage();
             panel1 = new System.Windows.Forms.Panel();
-            gridControls = new global::lib.Controls.Conditions.ControlGrid();
+            gridControls = new global::libfandro2.lib.Controls.Conditions.ControlGrid();
             panel2 = new System.Windows.Forms.Panel();
             panel3 = new System.Windows.Forms.Panel();
             btnClearAll = new System.Windows.Forms.Button();
@@ -639,7 +639,7 @@
             ftextFolders.SelectedFolder = "";
             ftextFolders.SelectedFolders = (System.Collections.Generic.List<string>)resources.GetObject("ftextFolders.SelectedFolders");
             ftextFolders.SelectedMultipleFolders = null;
-            ftextFolders.SelectionMode = lib.Controls.Folders.FileTextSelectionBox.FolderSelectionMode.SingleFolder;
+            ftextFolders.SelectionMode = libfandro2.lib.Controls.Folders.FileTextSelectionBox.FolderSelectionMode.SingleFolder;
             ftextFolders.Size = new System.Drawing.Size(427, 28);
             ftextFolders.TabIndex = 2;
             // 
@@ -975,13 +975,13 @@
         private System.Windows.Forms.ToolStripStatusLabel lblStatusFile;
         private System.Windows.Forms.ToolStripMenuItem toolsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem;
-        private lib.Controls.Folders.FileTextSelectionBox ftextFolders;
+        private libfandro2.lib.Controls.Folders.FileTextSelectionBox ftextFolders;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.RadioButton rdBtnAnd;
         private System.Windows.Forms.RadioButton rdBtnOr;
-        private global::lib.Controls.Conditions.ControlGrid gridControls;
+        private global::libfandro2.lib.Controls.Conditions.ControlGrid gridControls;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Button btnClearAll;
         private System.Windows.Forms.Button btnRemove;
