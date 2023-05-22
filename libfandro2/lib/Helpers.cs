@@ -20,7 +20,27 @@ using static System.Windows.Forms.ListViewItem;
 
 namespace libfandro2.lib
 {
+
+
     public static class Helpers {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <returns></returns>
+        public static Icon GetSmallIcon(string filename) {
+            Icon icon = null;
+
+            ShellAPI.SHFILEINFO shinfo = new ShellAPI.SHFILEINFO();
+
+            IntPtr hsmallimage = libfandro2.lib.WinAPI.ShellAPI.SHGetFileInfo(filename, 0, ref shinfo, Marshal.SizeOf(shinfo),
+                ShellAPI.SHGFI_ICON | ShellAPI.SHGFI_SMALLICON);
+
+            icon = Icon.FromHandle(shinfo.hIcon);
+
+            return icon;
+        }
+
         /// <summary>
         /// 
         /// </summary>
