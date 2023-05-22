@@ -461,7 +461,18 @@ namespace libfandro2.lib.Controls.Folders {
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        public override bool AllowDrop {
+            get {
+                return this.txtFolder.AllowDrop;
+            }
 
+            set {
+                this.txtFolder.AllowDrop = value;
+            }
+        }
 
     }
 }
