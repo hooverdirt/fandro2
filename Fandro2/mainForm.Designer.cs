@@ -630,6 +630,7 @@
             // 
             // ftextFolders
             // 
+            ftextFolders.AllowDrop = true;
             ftextFolders.AutoSize = true;
             ftextFolders.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             ftextFolders.Location = new System.Drawing.Point(359, 3);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.Design;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -310,16 +311,28 @@ namespace libfandro2.lib.Controls.Folders {
             if (e.Data != null && e.Data.GetDataPresent(DataFormats.FileDrop)) {
                 string[] folders = (string[])e.Data.GetData(DataFormats.FileDrop);
 
-                if ((e.KeyState & 8) == 8 
-                    && this.SelectionMode == FolderSelectionMode.MultipleFolders) {                    
+                if ((e.KeyState & 8) == 8
+                    && this.SelectionMode == FolderSelectionMode.MultipleFolders) {
                     List<string> intermediate = this.SelectedFolders;
                     // do not add duplicate folders
                     intermediate.AddUnique(folders);
                     this.SelectedFolders = intermediate;
                 }
                 else {
-                    this.setFolderSelectionMode(FolderSelectionMode.MultipleFolders);
-                    this.SelectedFolders = folders.ToList<string>();
+                    if (folders.Length == 1) {
+
+                        this.setFolderSelectionMode(FolderSelectionMode.SingleFolder);
+                        this.SelectedFolder = folders[0];
+                    }
+                    else {
+                        if (folders.Length > 1) {
+                            this.setFolderSelectionMode(FolderSelectionMode.MultipleFolders);
+                            this.SelectedFolders = folders.ToList<string>();
+                        }
+                    }
+                    // if we don't set focus to the current control, the 'on click' for
+                    // tbbSelectFolder doesn't trigger....
+                    this.Focus();
                 }
             }
         }
