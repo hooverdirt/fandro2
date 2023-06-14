@@ -153,7 +153,7 @@ namespace libfandro2.lib.Controls.Folders {
         /// </summary>
         /// <returns></returns>
         private List<string> selectMultipleFolders() {
-            List<string> result = new List<string>();
+            List<string> result = this.getSelectedTextFolders();
             frmMultiFolderEditor newform = new frmMultiFolderEditor();
             try {
                 newform.StartPosition = FormStartPosition.CenterParent;
